@@ -11,9 +11,9 @@ RUN npm install
 
 # Copy app files
 COPY . .
-CMD ["npm", "start"]
+RUN npm run build
 
 
 #STAGE-2
-#FROM nginx
-#COPY --from=build /app/build /usr/share/nginx/html
+FROM nginx
+COPY --from=build /app/dist /usr/share/nginx/html
