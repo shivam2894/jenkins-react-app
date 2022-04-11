@@ -1,5 +1,5 @@
 #STAGE-1
-FROM node As build
+FROM node:14-alpine As build
 
 # Add a work directory
 WORKDIR /app

@@ -23,7 +23,7 @@ const initialState = {
   isEdit: false,
 };
 
-export const contactReducer = (state = initialState, action) => {
+const contactReducer = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_CONTACT_PAGE:
       return {

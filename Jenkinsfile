@@ -21,7 +21,7 @@ pipeline {
         }
 		stage("Run the new image") {
             steps {
-				sh "ssh -i /key/gulshan.pem ubuntu@3.87.75.52 -yes  sudo docker run --name frontend -p 3000:3000 -d frontend1"				
+				sh "ssh -i /key/gulshan.pem ubuntu@3.87.75.52 -yes  sudo docker run --name frontend -p 3000:80 -d frontend1"				
             }
         }
     }
