@@ -55,9 +55,8 @@ export const signIn = (userName, password) => {
         password,
       })
       .then((res) => {
-
-        dispatch({ type: SIGN_IN_SUCCESS, payload: res.data.jwt })
-      })
+        
+        dispatch({ type: SIGN_IN_SUCCESS, payload: res.data.jwt})})
       .catch((err) =>
         dispatch({
           type: AUTH_FAILURE,
@@ -71,11 +70,11 @@ export const forgotPassword = (email) => {
   return (dispatch) => {
     const promise = new Promise((resolve, reject) => {
       axios
-        .post(`/user/forgot_password/${email}`)
-        .then(() => resolve())
-        .catch(() => reject())
+      .post(`/user/forgot_password/${email}`)
+      .then(() => resolve())
+      .catch(() => reject())
     });
-    toast.promise(promise, {
+    toast.promise(promise,{
       pending: "Sending reset password link to your Email",
       success: "Email sent successfully. Please check your inbox",
       error: "Failed to send Email",

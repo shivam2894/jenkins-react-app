@@ -10,7 +10,6 @@ import {
   searchByProductId,
   searchByProductName,
   getStockSummary,
-  resetTransactionFilters,
   resetInventoryFilters,
 } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";

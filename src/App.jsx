@@ -17,6 +17,7 @@ import Team from "./components/team/Team";
 import Report from "./components/analytics/Report";
 import NotFound from "./components/NotFound";
 import store from "./redux/store";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
   return (
@@ -33,12 +34,47 @@ function App() {
           <Route path="home" element={<Home />} />
           <Route path="profile" element={<Profile />} />
           <Route path="setting" element={<UpdateProfile />} />
-          <Route path="inventory" element={<Inventory />} />
-          <Route path="transactions" element={<Transactions />} />
+          <Route
+            path="inventory"
+            element={
+              <ErrorBoundary>
+                <Inventory />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="transactions"
+            element={
+              <ErrorBoundary>
+                <Transactions />
+              </ErrorBoundary>
+            }
+          />
           <Route path="invoice" element={<Invoice />} />
-          <Route path="contacts" element={<Contacts />} />
-          <Route path="team" element={<Team />} />
-          <Route path="reports" element={<Report />} />
+          <Route
+            path="contacts"
+            element={
+              <ErrorBoundary>
+                <Contacts />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="team"
+            element={
+              <ErrorBoundary>
+                <Team />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="reports"
+            element={
+              <ErrorBoundary>
+                <Report />
+              </ErrorBoundary>
+            }
+          />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

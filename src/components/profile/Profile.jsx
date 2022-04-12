@@ -33,11 +33,11 @@ function Profile() {
               <div className="md:w-2/3 w-full px-3 flex flex-row flex-wrap ">
                 <div className="w-full text-left text-gray-700 font-semibold relative pt-3 md:pt-0">
                   <div className="text-3xl text-white leading-tight">
-                    Gulshan Lulla
+                    User Name
                   </div>
                   <div className="text-normal font-serif text-gray-300 hover:text-gray-400 cursor-pointer">
                     <span className="border-b border-dashed border-gray-500 pb-1">
-                      gulshan@gmail.com
+                      user@gmail.com
                     </span>
                   </div>
                   <div className="text-md tracking-wider text-gray-300 hover:text-gray-400 cursor-pointer">
@@ -82,7 +82,7 @@ function Profile() {
             <div className="md:w-2/3 w-full px-3 flex flex-row flex-wrap ">
               <div className="w-full text-center text-gray-700 font-semibold relative pt-3 md:pt-0">
                 <div className="text-2xl text-white leading-tight">
-                  Gulshub pvt ltd.
+                  Company pvt ltd.
                 </div>
                 <div className="text-normal tracking-wider text-gray-300 hover:text-gray-400 cursor-pointer">
                   <span className="  border-gray-500 pb-1">

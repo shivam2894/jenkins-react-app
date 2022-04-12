@@ -7,10 +7,10 @@ const Home = () => {
         <div className="shadow-lg m-4 rounded-md border">
           <div className="w-full justify-between p-2">
             <h1 className="text-3xl font-light text-gray-700 font-sans mx-3 mb-2">
-              Welcome, Gulshan
+              Welcome
             </h1>
             <span className="text-gray-700 font-sans mx-3">
-              Walk Through the Features We have to offer
+              Walk through the features we provide
             </span>
           </div>
         </div>
