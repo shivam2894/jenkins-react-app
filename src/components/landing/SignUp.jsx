@@ -6,13 +6,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { signUp } from "../../redux/auth/authActions";
 import logo from "../../images/nattu.png";
+import { getAuthenticatedRequest } from "../../redux";
 
 const RegisterUser = () => {
   const [showRegUser, setShowRegUser] = useState(true);
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
   const formikUser = useFormik({
     initialValues: {
       username: "",
@@ -23,13 +23,14 @@ const RegisterUser = () => {
       dob: "",
       companyName: "",
       roles: ["ROLE_COMPANYOWNER"],
+      usernameExists: false,
     },
     validationSchema: Yup.object({
-      username: Yup.string().min(6,"Username must be minimum 6 characters").required("Username is required"),
+      username: Yup.string().min(6, "Username must be minimum 6 characters").required("Username is required"),
       name: Yup.string().required("Name is required"),
       email: Yup.string().email().required("Email is required"),
-      dob: Yup.date().max(new Date(Date.now()-(31556952000*10)),"Minimum age should be 10 years").required("DOB is required"),
-      password: Yup.string().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,"Password must contain minimum six characters, at least one letter, one number and one special character").required("Password is required"),
+      dob: Yup.date().max(new Date(Date.now() - (31556952000 * 10)), "Minimum age should be 10 years").required("DOB is required"),
+      password: Yup.string().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/, "Password must contain minimum six characters, at least one letter, one number and one special character").required("Password is required"),
       cpassword: Yup.string().oneOf(
         [Yup.ref("password"), null],
         "Passwords must match"
@@ -66,7 +67,7 @@ const RegisterUser = () => {
       <div className="mx-auto w-full max-w-sm lg:w-96">
         <div>
           <img
-          className="mx-auto"
+            className="mx-auto"
             src={logo}
             alt="NattuKaka"
           />
@@ -99,24 +100,27 @@ const RegisterUser = () => {
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     value={formikUser.values.username}
                     onChange={formikUser.handleChange}
-                    onBlur={formikUser.handleBlur}
+                    onBlur={(e) => {
+                      formikUser.handleBlur(e);
+                      // getAuthenticatedRequest().get(`/usernameCheck/${formikUser.values.username}`).then((res) => { if (res.data === true) formikUser.setFieldError("username", "Username already exists. Please choose a different username.") });
+                    }}
                   />
                   {formikUser.touched.username &&
-                      formikUser.errors.username && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                    formikUser.errors.username && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikUser.touched.username &&
-                    formikUser.errors.username && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        {formikUser.errors.username}
-                      </p>
-                    )}
+                  formikUser.errors.username && (
+                    <p className="mt-2 text-sm text-red-600" id="email-error">
+                      {formikUser.errors.username}
+                    </p>
+                  )}
               </div>
 
               <div>
@@ -134,21 +138,21 @@ const RegisterUser = () => {
                     onBlur={formikUser.handleBlur}
                   />
                   {formikUser.touched.name &&
-                      formikUser.errors.name && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                    formikUser.errors.name && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikUser.touched.name &&
-                    formikUser.errors.name && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        {formikUser.errors.name}
-                      </p>
-                    )}
+                  formikUser.errors.name && (
+                    <p className="mt-2 text-sm text-red-600" id="email-error">
+                      {formikUser.errors.name}
+                    </p>
+                  )}
               </div>
 
               <div className="space-y-1">
@@ -163,24 +167,27 @@ const RegisterUser = () => {
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     value={formikUser.values.email}
                     onChange={formikUser.handleChange}
-                    onBlur={formikUser.handleBlur}
+                    onBlur={(e) => {
+                      formikUser.handleBlur(e);
+                      // getAuthenticatedRequest().get(`/emailCheck/${formikUser.values.email}`).then((res) => { if (res.data === true) formikUser.setFieldError("email", "Username already exists. Please choose a different username.") });
+                    }}
                   />
                   {formikUser.touched.email &&
-                      formikUser.errors.email && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                    formikUser.errors.email && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikUser.touched.email &&
-                    formikUser.errors.email && (
-                      <p className="mt-2 text-sm text-red-600" id="email-error">
-                        {formikUser.errors.email}
-                      </p>
-                    )}
+                  formikUser.errors.email && (
+                    <p className="mt-2 text-sm text-red-600" id="email-error">
+                      {formikUser.errors.email}
+                    </p>
+                  )}
               </div>
 
               <div className="space-y-1">
@@ -199,21 +206,21 @@ const RegisterUser = () => {
                     onBlur={formikUser.handleBlur}
                   />
                   {formikUser.touched.dob &&
-                      formikUser.errors.dob && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                    formikUser.errors.dob && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikUser.touched.dob &&
-                    formikUser.errors.dob && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {formikUser.errors.dob}
-                      </p>
-                    )}
+                  formikUser.errors.dob && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {formikUser.errors.dob}
+                    </p>
+                  )}
               </div>
 
               <div className="space-y-1">
@@ -230,22 +237,22 @@ const RegisterUser = () => {
                     onChange={formikUser.handleChange}
                     onBlur={formikUser.handleBlur}
                   />
-                {formikUser.touched.password &&
-                      formikUser.errors.password && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                  {formikUser.touched.password &&
+                    formikUser.errors.password && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikUser.touched.password &&
-                    formikUser.errors.password && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {formikUser.errors.password}
-                      </p>
-                    )}
+                  formikUser.errors.password && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {formikUser.errors.password}
+                    </p>
+                  )}
               </div>
 
               <div className="space-y-1">
@@ -320,22 +327,22 @@ const RegisterUser = () => {
                     onChange={formikCompany.handleChange}
                     onBlur={formikCompany.handleBlur}
                   />
-                {formikCompany.touched.companyName &&
-                      formikCompany.errors.companyName && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                  {formikCompany.touched.companyName &&
+                    formikCompany.errors.companyName && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikCompany.touched.companyName &&
-                    formikCompany.errors.companyName && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {formikCompany.errors.companyName}
-                      </p>
-                    )}
+                  formikCompany.errors.companyName && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {formikCompany.errors.companyName}
+                    </p>
+                  )}
               </div>
 
               <div className="space-y-1">
@@ -353,22 +360,22 @@ const RegisterUser = () => {
                     onChange={formikCompany.handleChange}
                     onBlur={formikCompany.handleBlur}
                   />
-                {formikCompany.touched.gstin &&
-                      formikCompany.errors.gstin && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                  {formikCompany.touched.gstin &&
+                    formikCompany.errors.gstin && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikCompany.touched.gstin &&
-                    formikCompany.errors.gstin && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {formikCompany.errors.gstin}
-                      </p>
-                    )}
+                  formikCompany.errors.gstin && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {formikCompany.errors.gstin}
+                    </p>
+                  )}
               </div>
 
               <div className="space-y-1">
@@ -385,22 +392,22 @@ const RegisterUser = () => {
                     onChange={formikCompany.handleChange}
                     onBlur={formikCompany.handleBlur}
                   />
-                {formikCompany.touched.address &&
-                      formikCompany.errors.address && (
-                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                          <ExclamationCircleIcon
-                            className="h-5 w-5 text-red-500"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
+                  {formikCompany.touched.address &&
+                    formikCompany.errors.address && (
+                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <ExclamationCircleIcon
+                          className="h-5 w-5 text-red-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
                 </div>
                 {formikCompany.touched.address &&
-                    formikCompany.errors.address && (
-                      <p className="mt-2 text-sm text-red-600">
-                        {formikCompany.errors.address}
-                      </p>
-                    )}
+                  formikCompany.errors.address && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {formikCompany.errors.address}
+                    </p>
+                  )}
               </div>
 
               <div className="flex space-x-2">

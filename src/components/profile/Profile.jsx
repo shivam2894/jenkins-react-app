@@ -1,19 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import { getAuthenticatedRequest } from "../../redux";
 import UpdateProfileModal from "./UpdateProfileModal";
 
 function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    getAuthenticatedRequest().get(`/user/getUserInfo`).then((res) => {
+      // console.log(res.data);
+      setUserInfo(res.data);
+    });
+  }, []);
   return (
     <>
-    <ToastContainer/>
-      <main className="">
+      <ToastContainer />
+      {(userInfo != {}) && (<main className="">
         <div className="flex items-center  ">
           {/* <div className="w-screen h-screen bg-white flex flex-row flex-wrap p-3"> */}
-          <div className="mx-auto w-2/3 my-4">
+          <div className="mx-auto w-5/6 my-4">
             {/* Profile Card */}
             <div
-              className="rounded-lg shadow-lg shadow-black bg-gray-600 w-full flex flex-row flex-wrap p-3 antialiased "
+              className="rounded-lg shadow-lg shadow-black bg-nattu w-full flex flex-row flex-wrap p-3 antialiased "
               style={{
                 backgroundImage:
                   'url("https://images.unsplash.com/photo-1578836537282-3171d77f8632?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80")',
@@ -33,21 +42,21 @@ function Profile() {
               <div className="md:w-2/3 w-full px-3 flex flex-row flex-wrap ">
                 <div className="w-full text-left text-gray-700 font-semibold relative pt-3 md:pt-0">
                   <div className="text-3xl text-white leading-tight">
-                    User Name
+                    {userInfo.name}
                   </div>
                   <div className="text-normal font-serif text-gray-300 hover:text-gray-400 cursor-pointer">
                     <span className="border-b border-dashed border-gray-500 pb-1">
-                      user@gmail.com
+                      {userInfo.email}
                     </span>
                   </div>
                   <div className="text-md tracking-wider text-gray-300 hover:text-gray-400 cursor-pointer">
                     <span className="border-b border-dashed border-gray-500 pb-1">
-                      22/02/2000
+                      {userInfo.dob}
                     </span>
                   </div>
 
                   <button
-                    className="text-xl text-gray-300 hover:text-gray-400 cursor-pointer md:absolute bottom-0 right-0 bg-gray-500 rounded-md px-4 py-1"
+                    className="text-xl border-2  text-gray-300 hover:text-gray-400 cursor-pointer md:absolute bottom-0 right-0 bg-transparent rounded-md px-4 py-1"
                     onClick={() => {
                       setIsModalOpen(true);
                     }}
@@ -67,10 +76,10 @@ function Profile() {
         />
 
         {/* ------------company detail----------------- */}
-        <div className="mx-auto w-2/3 ">
+        <div className="mx-auto w-5/6 ">
           {/* Profile Card */}
           <div
-            className="rounded-lg shadow-lg shadow-black bg-gray-600 w-full flex flex-row flex-wrap p-3 antialiased  "
+            className="rounded-lg shadow-lg shadow-black bg-nattu w-full flex flex-row flex-wrap p-3 antialiased  "
             style={{
               backgroundImage:
                 'url("https://images.unsplash.com/photo-1578836537282-3171d77f8632?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80")',
@@ -80,18 +89,18 @@ function Profile() {
             }}
           >
             <div className="md:w-2/3 w-full px-3 flex flex-row flex-wrap ">
-              <div className="w-full text-center text-gray-700 font-semibold relative pt-3 md:pt-0">
+              <div className="w-full  text-gray-700 font-semibold relative pt-3 md:pt-0">
                 <div className="text-2xl text-white leading-tight">
-                  Company pvt ltd.
+                  {userInfo.companyName}
                 </div>
                 <div className="text-normal tracking-wider text-gray-300 hover:text-gray-400 cursor-pointer">
                   <span className="  border-gray-500 pb-1">
-                    GSTIN01283712983
+                    {userInfo.gstin}
                   </span>
                 </div>
                 <div className="text-normal text-gray-300 hover:text-gray-400 cursor-pointer">
                   <span className=" border-gray-500 pb-1">
-                    Chandwni chawk, Delhi
+                    {userInfo.address}
                   </span>
                 </div>
               </div>
@@ -99,7 +108,7 @@ function Profile() {
           </div>
           {/* End Profile Card */}
         </div>
-      </main>
+      </main>)}
     </>
   );
 }
