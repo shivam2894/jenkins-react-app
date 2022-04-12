@@ -17,3 +17,4 @@ RUN npm run build
 #STAGE-2
 FROM nginx
 COPY --from=build /app/dist /usr/share/nginx/html
+COPY --from=build /app/default.conf /etc/nginx/conf.d
