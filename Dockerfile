@@ -11,7 +11,6 @@ RUN npm install
 
 # Copy app files
 COPY . .
-#CMD ["npm", "start"]
 RUN npm run build
 
 
