@@ -19,7 +19,6 @@ const Login = () => {
       rememberMe: false,
     },
     onSubmit: (values) => {
-      console.log(values);
       dispatch(signIn(values, navigate));
     },
   });

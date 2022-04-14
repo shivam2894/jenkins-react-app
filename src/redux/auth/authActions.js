@@ -8,7 +8,7 @@ import {
   SESSION_EXPIRED,
 } from "./authTypes";
 
-axios.defaults.baseURL = "http://34.211.143.214:8080/api";
+axios.defaults.baseURL = "http://localhost:8080/api";
 
 export const signUp = (user, navigate) => {
   console.log("hello");
@@ -57,7 +57,7 @@ export const signIn = (values, navigate) => {
         password: values.password,
       })
       .then((res) => {
-        dispatch({ type: SIGN_IN_SUCCESS, payload: res.data.jwt, rememberMe });
+        dispatch({ type: SIGN_IN_SUCCESS, payload: res.data.jwt, rememberMe: values.rememberMe });
         navigate("/user");
       })
       .catch((err) =>
