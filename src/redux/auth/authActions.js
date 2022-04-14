@@ -8,7 +8,7 @@ import {
   SESSION_EXPIRED,
 } from "./authTypes";
 
-axios.defaults.baseURL = "http://localhost:8080/api";
+axios.defaults.baseURL = "http://3.87.75.52:8080/api";
 
 export const signUp = (user, navigate) => {
   console.log("hello");
