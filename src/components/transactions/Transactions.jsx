@@ -2,22 +2,22 @@ import { useState, useEffect } from "react";
 import TransactionTable from "./TransactionsTable";
 import AddTransactionModal from "./AddTransactionModal";
 import { useDispatch, useSelector } from "react-redux";
-import { changeEndDateFilter, changeStartDateFilter, changeStatusFilter, fetchAllTransactions, resetInventoryFilters, resetTransactionFilters } from "../../redux";
+import { changeEndDateFilter, changeStartDateFilter, changeStatusFilter, fetchAllTransactions, getAllCategories, resetInventoryFilters, resetTransactionFilters } from "../../redux";
 import { ToastContainer } from "react-toastify";
 
 const Transactions = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const transaction = useSelector(state=>state.transaction);
+  const transaction = useSelector(state => state.transaction);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(resetInventoryFilters());
     dispatch(fetchAllTransactions());
+    dispatch(getAllCategories());
   }, []);
 
   return (
     <>
-    <ToastContainer/>
       <main className="flex-1">
         <div className="py-6">
           <div className="space-y-4 mx-auto px-4 sm:px-6 md:px-8">
@@ -42,7 +42,7 @@ const Transactions = () => {
                     placeholder="from"
                     className="border-nattubtn focus:border-nattudark focus:ring-nattudark rounded-md"
                     value={transaction.startDateFilter}
-                    onChange={(e)=>dispatch(changeStartDateFilter(e.target.value))}
+                    onChange={(e) => dispatch(changeStartDateFilter(e.target.value))}
                   />
                   <span>TO</span>
                   <input
@@ -50,36 +50,36 @@ const Transactions = () => {
                     placeholder="to"
                     className="border-nattubtn focus:border-nattudark focus:ring-nattudark rounded-md"
                     value={transaction.endDateFilter}
-                    onChange={(e)=>dispatch(changeEndDateFilter(e.target.value))}
+                    onChange={(e) => dispatch(changeEndDateFilter(e.target.value))}
                   />
-                  <button onClick={()=>dispatch(fetchAllTransactions())}
+                  <button onClick={() => dispatch(fetchAllTransactions())}
                     className="px-2 py-2 border-2 rounded-md border-nattubtn hover:bg-gray-200 text-nattudark"
                   >
                     Search
                   </button>
                 </div>
                 <div className="flex my-3 md:mx-3 md:my-0 space-x-2">
-                <select
-                  id="filterByStatus"
-                  name="filterByStatus"
-                  className="w-40 px-1 h-full cursor-pointer border-nattubtn focus:border-nattudark focus:ring-nattudark rounded-md sm:text-sm"
-                  onChange={(e) => {
-                    dispatch(changeStatusFilter(e.target.value));
-                  }}
-                  value={transaction.statusFilter}
-                >
-                  <option disabled value="">
-                    Filter by Status
-                  </option>
-                  <option value="ALL">ALL</option>
-                  <option value="RECEIVED">RECEIVED</option>
-                  <option value="NOTRECEIVED">NOT RECEIVED</option>
-                  <option value="DISPATCHED">DISPATCHED</option>
-                  <option value="NOTDISPATCHED">NOT DISPATCHED</option>
-                </select>
-                <button onClick={()=>dispatch(resetTransactionFilters())} className="bg-nattubtn hover:bg-nattu text-white rounded-md px-3 py-1">
-                  Reset Filters
-                </button>
+                  <select
+                    id="filterByStatus"
+                    name="filterByStatus"
+                    className="w-40 px-1 h-full cursor-pointer border-nattubtn focus:border-nattudark focus:ring-nattudark rounded-md sm:text-sm"
+                    onChange={(e) => {
+                      dispatch(changeStatusFilter(e.target.value));
+                    }}
+                    value={transaction.statusFilter}
+                  >
+                    <option disabled value="">
+                      Filter by Status
+                    </option>
+                    <option value="ALL">ALL</option>
+                    <option value="RECEIVED">RECEIVED</option>
+                    <option value="NOTRECEIVED">NOT RECEIVED</option>
+                    <option value="DISPATCHED">DISPATCHED</option>
+                    <option value="NOTDISPATCHED">NOT DISPATCHED</option>
+                  </select>
+                  <button onClick={() => dispatch(resetTransactionFilters())} className="bg-nattubtn hover:bg-nattu text-white rounded-md px-3 py-1">
+                    Reset Filters
+                  </button>
                 </div>
               </div>
             </div>

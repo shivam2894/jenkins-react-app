@@ -52,7 +52,7 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
         setIsModalOpen(false);
         dispatch(resetProductList());
         resetForm();
-      } else toast.error("Please add products to continue");
+      } else toast.error("Please add products to continue", {containerId: "productList"});
     },
   });
 

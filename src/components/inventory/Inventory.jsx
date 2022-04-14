@@ -71,10 +71,7 @@ const Inventory = () => {
                 <div className="flex space-x-3">
                   <button
                     className="bg-nattubtn hover:bg-nattu text-white rounded-md px-3 py-1"
-                    onClick={() => {
-                      setIsModalOpen(true);
-                      dispatch(getAllCategories());
-                    }}
+                    onClick={() => setIsModalOpen(true)}
                   >
                     Add Item
                   </button>

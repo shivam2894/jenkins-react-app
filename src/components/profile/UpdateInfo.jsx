@@ -2,8 +2,13 @@ import { getAuthenticatedRequest } from "../../redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import { useCallback, useState } from "react";
+import debounce from "lodash.debounce";
 
 function UpdateInfo({ setIsModalOpen }) {
+  const [alreadyExists, setAlreadyExists] = useState({
+    email: false,
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -13,23 +18,52 @@ function UpdateInfo({ setIsModalOpen }) {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
-      dob: Yup.date().max(new Date(Date.now() - (31556952000 * 10)), "Minimum age should be 10 years").required("DOB is required"),
-      email: Yup.string().email().required("Email is required")
+      dob: Yup.date()
+        .max(
+          new Date(Date.now() - 31556952000 * 10),
+          "Minimum age should be 10 years"
+        )
+        .required("DOB is required"),
+      email: Yup.string().email().required("Email is required"),
     }),
     onSubmit: (values) => {
-      getAuthenticatedRequest()
-        .post(`/user/changeUserInfo`, values)
-        .then((res) => {
-          setIsModalOpen(false);
-          toast.success("Updated Successfully");
-        })
-        .catch((err) => toast.error("Email already in use. Choose another email"));
+      if (!alreadyExists.email) {
+        getAuthenticatedRequest()
+          .post(`/user/changeUserInfo`, values)
+          .then((res) => {
+            setIsModalOpen(false);
+            toast.success("Updated Successfully");
+          })
+          .catch((err) =>
+            toast.error("Email already in use. Choose another email")
+          );
+      }
     },
   });
 
+  const checkEmailExists = async (value) => {
+    if (!value)
+      return setAlreadyExists((prev) => {
+        return { ...prev, email: false };
+      });
+    const response = await getAuthenticatedRequest()
+      .get(`/emailCheck/${value}`)
+      .then((res) =>
+        setAlreadyExists((prev) => {
+          return { ...prev, email: res.data };
+        })
+      );
+    return !response;
+  };
+
+  const emailChangeHandler = useCallback(debounce(checkEmailExists, 500), []);
+
   return (
     <div className="">
-      <form onSubmit={formik.handleSubmit} className="w-full max-w-sm space-y-2 mx-auto p-2">
+      <form
+        onSubmit={formik.handleSubmit}
+        className="w-full max-w-sm space-y-2 mx-auto p-2"
+      >
         <div className="flex items-center border-b border-nattu py-2">
           <input
             className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
@@ -51,7 +85,7 @@ function UpdateInfo({ setIsModalOpen }) {
         </div>
         <div className="flex items-center border-b border-nattu py-2">
           <input
-            class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
+            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
             name="dob"
             type="text"
             placeholder="Date Of Birth"
@@ -77,7 +111,10 @@ function UpdateInfo({ setIsModalOpen }) {
             placeholder="Email"
             aria-label="Email"
             value={formik.values.email}
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              formik.handleChange(e);
+              emailChangeHandler(e.target.value);
+            }}
             onBlur={formik.handleBlur}
           />
         </div>
@@ -87,6 +124,11 @@ function UpdateInfo({ setIsModalOpen }) {
               {formik.errors.email}
             </p>
           ) : null}
+          {alreadyExists.email && (
+            <p className="mt-2 text-sm text-red-600" id="email-error">
+              Email already exists
+            </p>
+          )}
         </div>
         <button
           className="flex-shrink-0 bg-nattubtn hover:bg-nattu border-nattubtn hover:border-nattu text-sm border-4 text-white py-1 px-2 rounded "

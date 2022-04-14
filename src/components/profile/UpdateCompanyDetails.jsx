@@ -55,7 +55,7 @@ function UpdateCompanyDetails({ setIsModalOpen }) {
         </div>
         <div className="flex items-center border-b border-nattu py-2">
           <input
-            class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
+            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
             name="gstin"
             type="text"
             placeholder="GSTIN"
@@ -75,7 +75,7 @@ function UpdateCompanyDetails({ setIsModalOpen }) {
         </div>
         <div className="flex items-center border-b border-nattu py-2">
           <input
-            class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
+            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
             name="address"
             type="text"
             placeholder="Address"

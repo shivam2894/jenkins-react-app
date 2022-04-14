@@ -1,14 +1,17 @@
 import { PlusIcon, MinusIcon } from "@heroicons/react/outline";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addExistingProductToTransaction,
   addProductToTransaction,
   getAllCategories,
+  getAuthenticatedRequest,
   removeProductFromTransaction,
+  searchByProductName,
 } from "../../redux";
 import { toast, ToastContainer } from "react-toastify";
 import AddProductModal from "../inventory/AddProductModal";
+import debounce from "lodash.debounce";
 
 var formatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -16,16 +19,16 @@ var formatter = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0,
 });
 
-const ProductListTable = ({type}) => {
+const ProductListTable = ({ type }) => {
   const [productName, setProductName] = useState("");
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [matchingProducts, setMatchingProducts] = useState([]);
 
   const transaction = useSelector((state) => state.transaction);
-  const inventory = useSelector(state=>state.inventory);
   const dispatch = useDispatch();
 
   const handleAddExistingProductToTransaction = (product) => {
-    if(type==="SALES"){
+    if (type === "SALES") {
       if (product.stocks - product.quantity === 0) {
         toast.error(`${product.productName} out of stock !!!`);
       } else {
@@ -37,20 +40,33 @@ const ProductListTable = ({type}) => {
     } else dispatch(addExistingProductToTransaction(product));
   };
 
-  useEffect(() => {
-    if (transaction.err){
-      toast.error(
-        <a
-          onClick={() => {
-            setIsProductModalOpen(true);
-            dispatch(getAllCategories());
-          }}
-        >
-          Product not Present! Click here to add new product
-        </a>
-      );
+  function handleProductNotPresent() {
+    return toast.error(
+      <a
+        onClick={() => {
+          setIsProductModalOpen(true);
+          dispatch(getAllCategories());
+        }}
+      >
+        Product not Present! Click here to add new product
+      </a>
+    );
+  }
+
+  function getMatchingProducts(e) {
+    if(e.target.value){
+      getAuthenticatedRequest()
+        .get(`/products/name/${e.target.value}/0`)
+        .then((res) =>
+          setMatchingProducts(res.data.products.map((item) => item.productName))
+        );
     }
-  }, [transaction.err]);
+  }
+
+  const handleGetMatchingProducts = useCallback(
+    debounce(getMatchingProducts, 500),
+    []
+  );
 
   return (
     <>
@@ -64,13 +80,15 @@ const ProductListTable = ({type}) => {
               placeholder="Search by Name"
               name="name"
               value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              onChange={(e) => {
+                setProductName(e.target.value);
+                handleGetMatchingProducts(e);
+              }}
             />
             <datalist id="products">
-              {inventory.products &&
-                inventory.products.map((item, idx) => (
-                  <option key={idx} value={item.productName} />
-                ))}
+              {matchingProducts.map((item, idx) => (
+                <option key={idx} value={item} />
+              ))}
             </datalist>
           </div>
           <div>
@@ -85,7 +103,13 @@ const ProductListTable = ({type}) => {
                   handleAddExistingProductToTransaction(
                     transaction.productList[idx]
                   );
-                } else dispatch(addProductToTransaction(productName));
+                } else
+                  dispatch(
+                    addProductToTransaction(
+                      productName,type,
+                      handleProductNotPresent
+                    )
+                  );
                 setProductName("");
               }}
             >
@@ -145,34 +169,32 @@ const ProductListTable = ({type}) => {
                 <td className="text-left px-3 py-4">
                   {formatter.format(product.price)}
                 </td>
-                <td className="text-left px-3 py-4">
-                  {product.quantity}
-                </td>
+                <td className="text-left px-3 py-4">{product.quantity}</td>
                 <td className="text-left px-3 py-4">
                   {formatter.format(product.total)}
                 </td>
                 <td className="text-left font-medium sm:pr-6 space-x-2">
-                  <div className="flex">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      dispatch(
-                        removeProductFromTransaction(product.productName)
-                      );
-                    }}
-                    className="text-teal-600"
-                  >
-                    <MinusIcon className="w-5 h-5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleAddExistingProductToTransaction(product)
-                    }
-                    className="text-teal-600"
-                  >
-                    <PlusIcon className="w-5 h-5" />
-                  </button>
+                  <div className="flex space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        dispatch(
+                          removeProductFromTransaction(product.productName)
+                        );
+                      }}
+                      className="text-teal-600"
+                    >
+                      <MinusIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleAddExistingProductToTransaction(product)
+                      }
+                      className="text-teal-600"
+                    >
+                      <PlusIcon className="w-5 h-5" />
+                    </button>
                   </div>
                 </td>
               </tr>

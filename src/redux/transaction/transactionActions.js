@@ -2,7 +2,6 @@ import { toast } from "react-toastify";
 import { getAuthenticatedRequest } from "..";
 import {
   ADD_EXISTING_PRODUCT_TO_TRANSACTION,
-  ADD_PRODUCT_TO_TRANSACTION_FAILURE,
   ADD_PRODUCT_TO_TRANSACTION_REQUEST,
   ADD_PRODUCT_TO_TRANSACTION_SUCCESS,
   CHANGE_END_DATE_FILTER,
@@ -17,23 +16,21 @@ import {
   RESET_PRODUCT_LIST,
 } from "./transactionTypes";
 
-export const addProductToTransaction = (productName) => {
+export const addProductToTransaction = (productName, type, errFn) => {
   return (dispatch) => {
     dispatch({ type: ADD_PRODUCT_TO_TRANSACTION_REQUEST });
     getAuthenticatedRequest()
       .get(`/products/singleproduct/${productName}`)
-      .then((res) =>
-        dispatch({
-          type: ADD_PRODUCT_TO_TRANSACTION_SUCCESS,
-          payload: res.data,
-        })
-      )
-      .catch((err) =>
-        dispatch({
-          type: ADD_PRODUCT_TO_TRANSACTION_FAILURE,
-          payload: err.response.data,
-        })
-      );
+      .then((res) => {
+        if (type === "SALES" && res.data.stocks === 0)
+          toast.error("Product is out of stock");
+        else
+          dispatch({
+            type: ADD_PRODUCT_TO_TRANSACTION_SUCCESS,
+            payload: res.data,
+          });
+      })
+      .catch(() => errFn());
   };
 };
 
@@ -48,15 +45,8 @@ export const createTransaction = (transaction) => {
   return (dispatch) => {
     getAuthenticatedRequest()
       .post("/transactions/createTran", transaction)
-      .then(() =>{
-        dispatch(fetchAllTransactions());
-        toast.success("Successfully added transaction");
-      }
-      )
-      .catch(() => {
-        toast.error("Failed to add transaction");
-        dispatch(fetchAllTransactions());
-      });
+      .then(() => dispatch(fetchAllTransactions()))
+      .catch(() => toast.error("Failed to add transaction"));
   };
 };
 
@@ -111,10 +101,7 @@ export const deleteTransaction = (txId) => {
     getAuthenticatedRequest()
       .delete(`/transactions/delete/${txId}`)
       .then(() => dispatch(fetchAllTransactions()))
-      .catch(() => {
-        toast.error("Failed to delete transaction");
-        dispatch(fetchAllTransactions());
-      });
+      .catch(() => dispatch(fetchAllTransactions()));
   };
 };
 
@@ -155,9 +142,7 @@ export const updateTransactionStatus = (txId, status) => {
           status: status,
         },
       })
-      .then(() =>
-        dispatch(fetchAllTransactions())
-      )
+      .then(() => dispatch(fetchAllTransactions()))
       .catch((err) =>
         dispatch({
           type: FETCH_ALL_TRANSACTIONS_FAILURE,

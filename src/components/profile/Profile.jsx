@@ -13,6 +13,7 @@ function Profile() {
       setUserInfo(res.data);
     });
   }, []);
+
   return (
     <>
       <ToastContainer />

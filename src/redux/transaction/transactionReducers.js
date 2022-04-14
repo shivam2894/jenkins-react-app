@@ -39,11 +39,6 @@ const transactionReducers = (state = initialState, action) => {
         err: null,
       };
     case ADD_PRODUCT_TO_TRANSACTION_SUCCESS:
-      //check if product stock already 0
-      if (action.payload.stocks === 0) {
-        toast.error("Product is out of stock !!!");
-        return state;
-      }
       //add new product to list
       return {
         ...state,
@@ -71,11 +66,6 @@ const transactionReducers = (state = initialState, action) => {
             : product
         ),
         grandTotal: state.grandTotal + action.payload.price,
-      };
-    case ADD_PRODUCT_TO_TRANSACTION_FAILURE:
-      return {
-        ...state,
-        err: action.payload,
       };
     case REMOVE_PRODUCT_FROM_TRANSACTION:
       //to remove product from list: first find index of that product

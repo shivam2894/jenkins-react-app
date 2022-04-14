@@ -48,6 +48,7 @@ export const addProduct = (product) => {
       .then(() => {
         dispatch(getStockSummary());
         dispatch(fetchAllProducts());
+        dispatch(getAllCategories());
         toast.success(`Added Product ${product.productName} successfully`);
       })
       .catch((err) => {
@@ -100,6 +101,7 @@ export const editProduct = (product) => {
       .then(() => {
         dispatch(getStockSummary());
         dispatch(fetchAllProducts());
+        dispatch(getAllCategories());
         dispatch(editProductClose());
         toast.success("Edited Product successfully");
       })
@@ -133,6 +135,7 @@ export const uploadProducts = (products) => {
       .then(() => {
         dispatch(getStockSummary());
         dispatch(fetchAllProducts());
+        dispatch(getAllCategories());
         toast.success("Added products to your inventory");
       })
       .catch((err) => {
