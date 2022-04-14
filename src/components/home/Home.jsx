@@ -15,7 +15,7 @@ const Home = () => {
           </div>
         </div>
         <div className="py-2">
-          <div className="max-w-8xl mx-16 px-4 sm:px-6 md:px-8 flex items-center">
+          <div className="max-w-8xl md:mx-8 sm:px-6 md:px-8 flex items-center">
             {/* Replace with your content */}
             {/* <LandingCarousal /> */}
             <HomeCards />

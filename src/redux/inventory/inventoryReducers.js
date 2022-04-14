@@ -32,9 +32,9 @@ const initialState = {
   },
   stockSummary: {
     stockValue: "",
-    lowStock: "",
-    excessStock: "",
-    totalProducts: "",
+    lowStock: "-",
+    excessStock: "-",
+    totalProducts: 0,
   },
   isEdit: false,
   stockFilter: "none",
@@ -109,6 +109,8 @@ const inventoryReducers = (state = initialState, action) => {
         ...state,
         loading: false,
         products: [action.payload],
+        numberOfElements: 1,
+        nextExists: false
       };
     case SEARCH_BY_PRODUCT_NAME:
       return {

@@ -5,7 +5,7 @@ export const getAuthenticatedRequest = () =>
     baseURL: "http://34.211.143.214:8080/api",
 
     headers: {
-      Authorization: "Bearer " + localStorage.getItem("jwtToken"),
+      Authorization: "Bearer " + (localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken")),
     },
   });
 

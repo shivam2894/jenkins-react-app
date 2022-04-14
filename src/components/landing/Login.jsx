@@ -14,12 +14,13 @@ const Login = () => {
 
   const formikLogin = useFormik({
     initialValues: {
-      username: "",
+      userName: "",
       password: "",
       rememberMe: false,
     },
     onSubmit: (values) => {
-      dispatch(signIn(values.username, values.password));
+      console.log(values);
+      dispatch(signIn(values, navigate));
     },
   });
 
@@ -34,14 +35,15 @@ const Login = () => {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
+    const token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
     if (token) {
       if (jwtDecode(token).exp < Date.now() / 1000) {
         localStorage.clear();
+        sessionStorage.clear();
         dispatch(sessionExpired());
       } else navigate("/user");
     }
-  });
+  },[]);
 
   return (
     <>
@@ -49,7 +51,7 @@ const Login = () => {
         <div className="mx-auto w-full md:max-w-md lg:w-96">
           <div>
             <div>
-              <img src={logo} alt="NattuKaka" className="mx-auto" />
+              <img src={logo} alt="NattuKaka" className="mx-auto w-80" />
             </div>
           </div>
 
@@ -87,7 +89,7 @@ const Login = () => {
                 >
                   <div>
                     <label
-                      htmlFor="username"
+                      htmlFor="userName"
                       className="block text-sm font-medium text-gray-700"
                     >
                       Username
@@ -95,11 +97,11 @@ const Login = () => {
                     <div className="mt-1">
                       <input
                         id="username"
-                        name="username"
+                        name="userName"
                         type="text"
                         autoComplete="username"
                         required
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-nattubtn focus:border-nattubtn sm:text-sm"
                         value={formikLogin.values.username}
                         onChange={formikLogin.handleChange}
                       />
@@ -120,34 +122,33 @@ const Login = () => {
                         type="password"
                         autoComplete="current-password"
                         required
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-nattubtn focus:border-nattubtn sm:text-sm"
                         value={formikLogin.values.password}
                         onChange={formikLogin.handleChange}
                       />
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
-                    {/* <div className="flex items-center">
+                    <div className="flex items-center">
                     <input
-                      id="remember-me"
-                      name="remember-me"
+                      id="rememberMe"
+                      name="rememberMe"
                       type="checkbox"
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-nattu focus:ring-nattubtn border-gray-300 rounded"
                       value={formikLogin.values.rememberMe}
                       onChange={formikLogin.handleChange}
                     />
                     <label
-                      htmlFor="remember-me"
+                      htmlFor="rememberMe"
                       className="ml-2 block text-sm text-gray-900"
                     >
                       Remember me
                     </label>
-                  </div> */}
-
+                  </div>
                     <div className="text-sm">
                       <Link
                         to="#"
-                        className="font-medium text-nattubtn hover:text-indigo-500"
+                        className="font-medium text-sky-900 hover:text-yellow-800"
                         onClick={() => setShowForgotPassword(true)}
                       >
                         Forgot your password?
@@ -167,7 +168,7 @@ const Login = () => {
                   <div>
                     <button
                       type="submit"
-                      className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nattubtn"
                     >
                       Sign in
                       {auth.loading && (
@@ -226,7 +227,7 @@ const Login = () => {
                         type="text"
                         autoComplete="email"
                         required
-                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-nattubtn focus:border-nattubtn sm:text-sm"
                         value={formikForgotPwd.values.email}
                         onChange={formikForgotPwd.handleChange}
                       />
@@ -235,14 +236,14 @@ const Login = () => {
 
                   <div className="flex space-x-2">
                     <button
-                      className="w-1/2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="w-1/2 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nattubtn"
                       onClick={() => setShowForgotPassword(false)}
                     >
                       Back
                     </button>
                     <button
                       type="submit"
-                      className="w-1/2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="w-1/2 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nattubtn"
                     >
                       Continue
                       {auth.loading && (

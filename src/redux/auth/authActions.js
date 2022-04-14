@@ -10,7 +10,7 @@ import {
 
 axios.defaults.baseURL = "http://34.211.143.214:8080/api";
 
-export const signUp = (user) => {
+export const signUp = (user, navigate) => {
   console.log("hello");
   return (dispatch) => {
     dispatch({
@@ -27,14 +27,16 @@ export const signUp = (user) => {
           companyName: user.companyName,
           gstin: user.gstin,
           address: user.address,
+          contactOf: "-1"
         },
-        roles: user.roles,
+        roles: ["ROLE_COMPANYOWNER"]
       })
-      .then(() =>
+      .then(() => {
         dispatch({
           type: SIGN_UP_SUCCESS,
-        })
-      )
+        });
+        navigate("/login");
+      })
       .catch((err) =>
         dispatch({
           type: AUTH_FAILURE,
@@ -44,19 +46,20 @@ export const signUp = (user) => {
   };
 };
 
-export const signIn = (userName, password) => {
+export const signIn = (values, navigate) => {
   return (dispatch) => {
     dispatch({
       type: AUTH_REQUEST,
     });
     axios
       .post("/signin", {
-        userName,
-        password,
+        userName: values.userName,
+        password: values.password,
       })
       .then((res) => {
-        
-        dispatch({ type: SIGN_IN_SUCCESS, payload: res.data.jwt})})
+        dispatch({ type: SIGN_IN_SUCCESS, payload: res.data.jwt, rememberMe });
+        navigate("/user");
+      })
       .catch((err) =>
         dispatch({
           type: AUTH_FAILURE,
@@ -67,19 +70,19 @@ export const signIn = (userName, password) => {
 };
 
 export const forgotPassword = (email) => {
-  return (dispatch) => {
+  return () => {
     const promise = new Promise((resolve, reject) => {
       axios
-      .post(`/user/forgot_password/${email}`)
-      .then(() => resolve())
-      .catch(() => reject())
+        .post(`/user/forgot_password/${email}`)
+        .then(() => resolve())
+        .catch(() => reject());
     });
-    toast.promise(promise,{
+    toast.promise(promise, {
       pending: "Sending reset password link to your Email",
       success: "Email sent successfully. Please check your inbox",
       error: "Failed to send Email",
-    })
-  }
+    });
+  };
 };
 
 export const resetPassword = (token, newPassword, navigate) => {

@@ -71,7 +71,18 @@ const UsersTable = () => {
                         <td className="px-6 py-4 text-sm whitespace-nowrap text-right flex space-x-2">
                           <button
                             onClick={() =>
-                              dispatch(removeEmployee(emp.userName))
+                              swal({
+                                title: "Are you sure you want to remove employee details?",
+                                text: `Employee name: ${emp.name}`,
+                                icon: "warning",
+                                buttons: true,
+                                dangerMode: true,
+                              })
+                              .then((willDelete) => {
+                                if (willDelete) {
+                                  dispatch(removeEmployee(emp.userName));
+                                }
+                              })
                             }
                             className="text-red-600 hover:text-red-900 cursor-pointer"
                           >

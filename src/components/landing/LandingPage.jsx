@@ -8,9 +8,9 @@ const Authentication = () => {
     <ToastContainer/>
       <div className="min-h-screen flex flex-row-reverse">
         <Outlet/>
-        <div className="hidden lg:block relative w-0 flex-1">
+        <div className="hidden lg:block relative w-0 flex-1 bg-teal-100">
           <img
-            className="absolute inset-0 m-auto object-cover"
+            className="absolute inset-0 m-auto object-cover bg-teal-100"
             src={LandingImage}
             alt=""
           />

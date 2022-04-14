@@ -26,7 +26,8 @@ const authReducer = (state = initialState, action) => {
         error: action.payload,
       };
     case SIGN_IN_SUCCESS:
-      localStorage.setItem("jwtToken", action.payload);
+      if(action.rememberMe) localStorage.setItem("jwtToken",action.payload);
+      else sessionStorage.setItem("jwtToken",action.payload);
       return {
         loading: false,
         isLoggedIn: true,

@@ -3,6 +3,7 @@ import TransactionTable from "./TransactionsTable";
 import AddTransactionModal from "./AddTransactionModal";
 import { useDispatch, useSelector } from "react-redux";
 import { changeEndDateFilter, changeStartDateFilter, changeStatusFilter, fetchAllTransactions, resetInventoryFilters, resetTransactionFilters } from "../../redux";
+import { ToastContainer } from "react-toastify";
 
 const Transactions = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,12 +17,13 @@ const Transactions = () => {
 
   return (
     <>
+    <ToastContainer/>
       <main className="flex-1">
         <div className="py-6">
           <div className="space-y-4 mx-auto px-4 sm:px-6 md:px-8">
             {/* ------------------------------------- */}
             <div className="shadow-sm rounded-md border-2 shadow-gray-300 space-y-10">
-              <div className="flex w-full justify-between p-2">
+              <div className="flex w-full justify-between md:p-2">
                 <h1 className="text-3xl font-semibold text-gray-700 font-sans mx-3">
                   Transactions
                 </h1>
@@ -33,7 +35,7 @@ const Transactions = () => {
                 </button>
               </div>
               <div className="md:flex justify-between p-2 pb-4">
-                <div className="space-x-2 mx-3">
+                <div className="flex flex-col md:flex-row space-y-2 md:space-x-2 md:space-y-0 md:items-center">
                   <span>FROM</span>
                   <input
                     type="date"
@@ -56,11 +58,11 @@ const Transactions = () => {
                     Search
                   </button>
                 </div>
-                <div className="flex mx-3 space-x-2">
+                <div className="flex my-3 md:mx-3 md:my-0 space-x-2">
                 <select
                   id="filterByStatus"
                   name="filterByStatus"
-                  className="w-36 px-1 my-auto cursor-pointer border-nattubtn focus:border-nattudark focus:ring-nattudark rounded-md sm:text-sm"
+                  className="w-40 px-1 h-full cursor-pointer border-nattubtn focus:border-nattudark focus:ring-nattudark rounded-md sm:text-sm"
                   onChange={(e) => {
                     dispatch(changeStatusFilter(e.target.value));
                   }}
@@ -75,7 +77,7 @@ const Transactions = () => {
                   <option value="DISPATCHED">DISPATCHED</option>
                   <option value="NOTDISPATCHED">NOT DISPATCHED</option>
                 </select>
-                <button onClick={()=>dispatch(resetTransactionFilters())} className="my-auto bg-nattubtn hover:bg-nattu text-white rounded-md px-3 py-1">
+                <button onClick={()=>dispatch(resetTransactionFilters())} className="bg-nattubtn hover:bg-nattu text-white rounded-md px-3 py-1">
                   Reset Filters
                 </button>
                 </div>

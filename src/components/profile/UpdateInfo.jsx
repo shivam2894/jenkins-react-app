@@ -53,12 +53,13 @@ function UpdateInfo({ setIsModalOpen }) {
           <input
             class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none focus:ring-0"
             name="dob"
-            type="date"
-            placeholder="DOB"
+            type="text"
+            placeholder="Date Of Birth"
             aria-label="Date Of Birth"
             value={formik.values.dob}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            onFocus={(e) => (e.currentTarget.type = "date")}
           />
         </div>
         <div>

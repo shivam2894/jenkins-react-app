@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import ContactsTable from "./ContactsTable";
 import AddContactModal from "./AddContactModal";
-import {
-  fetchAllContacts,
-} from "../../redux";
-import { useDispatch, useSelector } from "react-redux";
-import { SearchIcon } from "@heroicons/react/solid";
+import { ToastContainer } from "react-toastify";
 
 const Contacts = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const contacts = useSelector((state) => state.contacts);
-  const dispatch = useDispatch();
 
   return (
     <>
+    <ToastContainer/>
       <main className="flex-1">
         <div className="py-6">
           <div className="space-y-4 mx-auto px-4 sm:px-6 md:px-8">

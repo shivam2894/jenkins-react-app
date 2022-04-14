@@ -55,11 +55,11 @@ function Invoice() {
                 </div>
                 <div className="p-2">
                   <ul className="flex">
-                    <li className="flex flex-col items-center p-2 border-l-2 border-indigo-200">
+                    <li className="flex flex-col items-center p-2 border-l-2 border-nattubtn-200">
                       <MdOutlineEmail className="text-blue-700" size={20} />
                       <span className="text-sm flex flex-wrap">{invoice.ownerEmail}</span>
                     </li>
-                    <li className="flex flex-col p-2 border-l-2 border-indigo-200">
+                    <li className="flex flex-col p-2 border-l-2 border-nattubtn-200">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="w-5 h-5 text-blue-600"

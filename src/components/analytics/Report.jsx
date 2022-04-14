@@ -1,11 +1,10 @@
-import { Link } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import StockValuationByCategory from "./StockValuationByCategory";
 import TransactionValuationByYear from "./TransactionValuationByYear";
-import AccessDenied from "../AccessDenied";
+import AccessDenied from "../common/AccessDenied";
 
 const Report = () => {
-  const parsedJWT = jwtDecode(localStorage.getItem("jwtToken"));
+  const parsedJWT = jwtDecode(localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken"));
 
   return (
     <>

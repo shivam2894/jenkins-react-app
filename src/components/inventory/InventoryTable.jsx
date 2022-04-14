@@ -108,9 +108,20 @@ const InventoryTable = ({ setIsModalOpen }) => {
                           </a>
                           <a
                             className="text-red-600 hover:text-red-900 cursor-pointer"
-                            onClick={() => {
-                              dispatch(deleteProduct(item.id));
-                            }}
+                            onClick={() =>
+                              swal({
+                                title: "Are you sure you want to delete this product?",
+                                text: `${item.productName}`,
+                                icon: "warning",
+                                buttons: true,
+                                dangerMode: true,
+                              })
+                              .then((willDelete) => {
+                                if (willDelete) {
+                                  dispatch(deleteProduct(item.id));
+                                }
+                              })
+                            }
                           >
                             <TrashIcon className="w-6" />
                           </a>
@@ -161,9 +172,19 @@ const InventoryTable = ({ setIsModalOpen }) => {
             >
               <div className="hidden sm:block">
                 <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{inventory.currPage*10+1}</span> to{" "}
-                  <span className="font-medium">{(inventory.currPage*10)+inventory.numberOfElements}</span> of{" "}
-                  <span className="font-medium">{inventory.stockSummary.totalProducts}</span> results
+                  Showing{" "}
+                  <span className="font-medium">
+                    {inventory.currPage * 10 + (inventory.numberOfElements > 0 ? 1 : 0)}
+                  </span>{" "}
+                  to{" "}
+                  <span className="font-medium">
+                    {inventory.currPage * 10 + inventory.numberOfElements}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-medium">
+                    {inventory.stockSummary.totalProducts}
+                  </span>{" "}
+                  results
                 </p>
               </div>
               <div className="flex-1 flex justify-between sm:justify-end">

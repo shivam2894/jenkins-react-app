@@ -13,7 +13,7 @@ function HomeCards() {
         {/* <div className="container2 d-flex align-items-center justify-content-center flex-wrap"> */}
         <div className="container2 flex items-center flex-wrap columns-3 justify-evenly">
           {/* -------------- */}
-          <div className="box2">
+          <div className="box2 w-80 h-80 lg:w-[360px] lg:h-[360px]">
             <div className="body2">
               <div className="imgContainer2">
                 <img
@@ -39,7 +39,7 @@ function HomeCards() {
             </div>
           </div>
           {/* -------------------- */}
-          <div className="box2">
+          <div className="box2 w-80 h-80 lg:w-[360px] lg:h-[360px]">
             <div className="body2">
               <div className="imgContainer2">
                 {" "}
@@ -67,7 +67,7 @@ function HomeCards() {
             </div>
           </div>
           {/* ----------------------- */}
-          <div className="box2">
+          <div className="box2 w-80 h-80 lg:w-[360px] lg:h-[360px]">
             <div className="body2">
               <div className="imgContainer2">
                 <img
@@ -94,7 +94,7 @@ function HomeCards() {
             </div>
           </div>
           {/* ------------ */}
-          <div className="box2">
+          <div className="box2 w-80 h-80 lg:w-[360px] lg:h-[360px]">
             <div className="body2">
               <div className="imgContainer2">
                 <img
@@ -119,7 +119,7 @@ function HomeCards() {
             </div>
           </div>
           {/* ------------ */}
-          <div className="box2">
+          <div className="box2 w-80 h-80 lg:w-[360px] lg:h-[360px]">
             <div className="body2">
               <div className="imgContainer2">
                 <img
@@ -145,7 +145,7 @@ function HomeCards() {
             </div>
           </div>
           {/* ------------ */}
-          <div className="box2">
+          <div className="box2 w-80 h-80 lg:w-[360px] lg:h-[360px]">
             <div className="body2">
               <div className="imgContainer2">
                 <img

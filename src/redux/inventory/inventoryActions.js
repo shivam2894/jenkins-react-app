@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { getAuthenticatedRequest } from "..";
 import {
   CHANGE_PAGE,
@@ -45,12 +46,14 @@ export const addProduct = (product) => {
     getAuthenticatedRequest()
       .post("/products/add", product)
       .then(() => {
-        dispatch(fetchAllProducts(getState().inventory.currPage));
         dispatch(getStockSummary());
+        dispatch(fetchAllProducts());
+        toast.success(`Added Product ${product.productName} successfully`);
       })
-      .catch((err) =>
-        dispatch({ type: INVENTORY_FAILURE, payload: err.response })
-      );
+      .catch((err) => {
+        dispatch({ type: INVENTORY_FAILURE, payload: err.response });
+        toast.error("Failed to add product");
+      });
   };
 };
 
@@ -81,7 +84,7 @@ export const editProductClose = () => {
 };
 
 export const editProduct = (product) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: INVENTORY_REQUEST });
     getAuthenticatedRequest()
       .patch(`/products/edit/${product.id}`, {
@@ -95,22 +98,25 @@ export const editProduct = (product) => {
         price: product.price,
       })
       .then(() => {
-        dispatch(fetchAllProducts(getState().inventory.currPage));
         dispatch(getStockSummary());
+        dispatch(fetchAllProducts());
+        dispatch(editProductClose());
+        toast.success("Edited Product successfully");
       })
-      .catch((err) =>
-        dispatch({ type: INVENTORY_FAILURE, payload: err.response })
-      );
+      .catch((err) => {
+        dispatch({ type: INVENTORY_FAILURE, payload: err.response });
+        toast.error(`Edited Product ${product.productName} successfully`);
+      });
   };
 };
 
 export const deleteProduct = (id) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: INVENTORY_REQUEST });
     getAuthenticatedRequest()
       .delete(`/products/delete/${id}`)
       .then(() => {
-        dispatch(fetchAllProducts(getState().inventory.currPage));
+        dispatch(fetchAllProducts());
         dispatch(getStockSummary());
       })
       .catch((err) =>
@@ -120,17 +126,22 @@ export const deleteProduct = (id) => {
 };
 
 export const uploadProducts = (products) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: INVENTORY_REQUEST });
     getAuthenticatedRequest()
       .post("/products/upload", products)
       .then(() => {
-        dispatch(fetchAllProducts(getState().inventory.currPage));
         dispatch(getStockSummary());
+        dispatch(fetchAllProducts());
+        toast.success("Added products to your inventory");
       })
-      .catch((err) =>
-        dispatch({ type: INVENTORY_FAILURE, payload: err.response })
-      );
+      .catch((err) => {
+        dispatch({ type: INVENTORY_FAILURE, payload: err.response });
+        toast.error(
+          "Failed to add products to your inventory. Please make sure you are not entering duplicate products."
+        );
+        dispatch(fetchAllProducts());
+      });
   };
 };
 
@@ -162,9 +173,11 @@ export const searchByProductId = (id) => {
       .then((res) => {
         dispatch({ type: SEARCH_BY_PRODUCT_ID, payload: res.data });
       })
-      .catch((err) =>
-        dispatch({ type: INVENTORY_FAILURE, payload: err.response })
-      );
+      .catch((err) => {
+        toast.error(err.response.data.message);
+        dispatch({ type: INVENTORY_FAILURE, payload: err.response });
+        dispatch(fetchAllProducts());
+      });
   };
 };
 
@@ -174,8 +187,10 @@ export const searchByProductName = (name) => {
     getAuthenticatedRequest()
       .get(`/products/name/${name}/${getState().inventory.currPage}`)
       .then((res) => {
-        dispatch({ type: SEARCH_BY_PRODUCT_NAME, payload: res.data });
-        // dispatch(getStockSummary());
+        if (res.data.products.length === 0) {
+          toast.error(`Product ${name} not found`);
+          dispatch(fetchAllProducts());
+        } else dispatch({ type: SEARCH_BY_PRODUCT_NAME, payload: res.data });
       })
       .catch((err) =>
         dispatch({ type: INVENTORY_FAILURE, payload: err.response })
@@ -184,8 +199,8 @@ export const searchByProductName = (name) => {
 };
 
 export const resetInventoryFilters = () => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: RESET_INVENTORY_FILTERS });
-    dispatch(fetchAllProducts(getState().inventory.currPage));
+    dispatch(fetchAllProducts());
   };
 };

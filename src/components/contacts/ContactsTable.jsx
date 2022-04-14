@@ -88,9 +88,23 @@ const ContactsTable = ({ setIsModalOpen }) => {
                         </a>
                         <a
                           className="text-red-600 hover:text-red-900 cursor-pointer"
-                          onClick={() => {
-                            dispatch(deleteContact(item.id));
-                          }}
+                          // onClick={() => {
+                          //   dispatch(deleteContact(item.id));
+                          // }}
+                          onClick={() =>
+                            swal({
+                              title: "Are you sure you want to remove this contact?",
+                              text: `Company name: ${item.companyName}`,
+                              icon: "warning",
+                              buttons: true,
+                              dangerMode: true,
+                            })
+                            .then((willDelete) => {
+                              if (willDelete) {
+                                dispatch(deleteContact(item.id));
+                              }
+                            })
+                          }
                         >
                           <TrashIcon className="w-6" />
                         </a>

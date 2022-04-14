@@ -86,6 +86,7 @@ const ProductListTable = ({type}) => {
                     transaction.productList[idx]
                   );
                 } else dispatch(addProductToTransaction(productName));
+                setProductName("");
               }}
             >
               Add Product

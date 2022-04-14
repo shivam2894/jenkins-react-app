@@ -5,9 +5,8 @@ import {useNavigate} from 'react-router-dom'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {NavLink, Outlet} from "react-router-dom";
 import {MdInventory} from 'react-icons/md'
-import logo from "../images/nattu.png"
+import logo from "../../images/nattu.png"
 import {
-  BellIcon,
   SwitchHorizontalIcon,
   ChartBarIcon,
   HomeIcon,
@@ -27,9 +26,9 @@ const navigation = [
 ]
 const userNavigation = [
   { name: 'Your Profile', href: 'profile' },
-  { name: 'Settings', href: '' },
   { name: 'Sign out', href: '', onClick: ()=>{
     localStorage.clear();
+    sessionStorage.clear();
   } },
 ]
 
@@ -42,7 +41,7 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(()=>{
-    const token = localStorage.getItem("jwtToken")
+    const token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken")
     if (token) {
       if(jwtDecode(token).exp < Date.now()/1000) navigate("/login");
     } else navigate("/login");
@@ -164,7 +163,7 @@ const Dashboard = () => {
           <div className="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white shadow">
             <button
               type="button"
-              className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+              className="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-nattubtn md:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
@@ -179,7 +178,7 @@ const Dashboard = () => {
                 {/* Profile dropdown */}
                 <Menu as="div" className="ml-3 relative">
                   <div>
-                    <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nattubtn">
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"

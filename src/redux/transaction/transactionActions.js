@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { getAuthenticatedRequest } from "..";
 import {
   ADD_EXISTING_PRODUCT_TO_TRANSACTION,
@@ -44,13 +45,18 @@ export const removeProductFromTransaction = (productName) => {
 };
 
 export const createTransaction = (transaction) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     getAuthenticatedRequest()
       .post("/transactions/createTran", transaction)
-      .then(() =>
-        dispatch(fetchAllTransactions(getState().transaction.currPage))
+      .then(() =>{
+        dispatch(fetchAllTransactions());
+        toast.success("Successfully added transaction");
+      }
       )
-      .catch((err) => console.log(err.response.data.error));
+      .catch(() => {
+        toast.error("Failed to add transaction");
+        dispatch(fetchAllTransactions());
+      });
   };
 };
 
@@ -100,17 +106,15 @@ export const fetchAllTransactions = () => {
 };
 
 export const deleteTransaction = (txId) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: TRANSACTIONS_REQUEST });
     getAuthenticatedRequest()
       .delete(`/transactions/delete/${txId}`)
       .then(() => dispatch(fetchAllTransactions()))
-      .catch((err) =>
-        dispatch({
-          type: FETCH_ALL_TRANSACTIONS_FAILURE,
-          payload: err.response.data,
-        })
-      );
+      .catch(() => {
+        toast.error("Failed to delete transaction");
+        dispatch(fetchAllTransactions());
+      });
   };
 };
 

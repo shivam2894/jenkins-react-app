@@ -5,11 +5,11 @@ import { fetchAllEmployees } from "../../redux";
 import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import jwtDecode from "jwt-decode";
-import AccessDenied from "../AccessDenied";
+import AccessDenied from "../common/AccessDenied";
 
 const Team = () => {
   const dispatch = useDispatch();
-  const parsedJWT = jwtDecode(localStorage.getItem("jwtToken"));
+  const parsedJWT = jwtDecode(localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken"));
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {

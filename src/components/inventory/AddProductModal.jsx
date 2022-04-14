@@ -8,8 +8,6 @@ import {
   addProduct,
   editProduct,
   editProductClose,
-  fetchAllProducts,
-  getAllCategories,
 } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -39,14 +37,14 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
       unit: Yup.string().required("Unit is required"),
       price: Yup.number().min(0, "Price can't be negative").required(),
       minStock: Yup.number().min(0, "Min Stock can't be negative").required(),
-      maxStock: Yup.number().min(0, "Max Stock can't be negative").required(),
+      maxStock: Yup.number().min(0, "Max Stock can't be negative").moreThan(Yup.ref("minStock"),"Must be greater than min stock")
+      .required(),
       categoryName: Yup.string().required("Category Name is Required"),
     }),
     onSubmit: (values, { resetForm }) => {
       resetForm();
       if (inventory.isEdit) dispatch(editProduct(values));
       else dispatch(addProduct(values));
-      dispatch(fetchAllProducts(inventory.currPage));
       setIsModalOpen(false);
     },
   });
@@ -112,7 +110,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                       <input
                         type="text"
                         name="productName"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         required
                         value={formik.values.productName}
                         onChange={formik.handleChange}
@@ -148,7 +146,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="text"
                         name="categoryName"
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.categoryName.toUpperCase()}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -191,7 +189,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="number"
                         name="price"
                         id="price"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
+                        className="mt-1 focus:ring-nattubtn focus:border-nattubtn block w-full pl-7 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
                         placeholder="0.00"
                         aria-describedby="price-currency"
                         value={formik.values.price}
@@ -227,7 +225,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                         id="unit"
                         name="unit"
                         autoComplete="unit"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
+                        className="mt-1 focus:ring-nattubtn focus:border-nattubtn block w-full p-2 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
                         value={formik.values.unit}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -256,7 +254,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                       </p>
                     ) : null}
                   </div>
-                  <div className="p-2 w-1/3">
+                  <div className="p-2 md:w-1/3">
                     <label
                       htmlFor="stocks"
                       className="block text-sm font-medium text-gray-700"
@@ -268,7 +266,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="number"
                         name="stocks"
                         id="stocks"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.stocks}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -289,7 +287,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                     ) : null}
                   </div>
 
-                  <div className="p-2 w-1/3">
+                  <div className="p-2 md:w-1/3">
                     <label
                       htmlFor="minStock"
                       className="block text-sm font-medium text-gray-700"
@@ -301,7 +299,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="number"
                         name="minStock"
                         id="minStock"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.minStock}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -322,7 +320,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                     ) : null}
                   </div>
 
-                  <div className="p-2 w-1/3">
+                  <div className="p-2 md:w-1/3">
                     <label
                       htmlFor="maxStock"
                       className="block text-sm font-medium text-gray-700"
@@ -334,7 +332,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="number"
                         name="maxStock"
                         id="maxStock"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.maxStock}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -355,7 +353,7 @@ const AddProductModal = ({ isModalOpen, setIsModalOpen }) => {
                     ) : null}
                   </div>
 
-                  <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                  <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse p-2">
                     <button
                       type="submit"
                       className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-nattubtn text-base font-medium text-white hover:bg-nattu focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"

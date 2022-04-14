@@ -39,7 +39,7 @@ function ResetPassword() {
         <div className="mx-auto w-full md:max-w-md lg:w-96">
           <div>
             <div>
-              <img src={logo} alt="NattuKaka" className="mx-auto" />
+              <img src={logo} alt="NattuKaka" className="mx-auto w-80" />
             </div>
           </div>
           <div className="mt-8">
@@ -66,7 +66,7 @@ function ResetPassword() {
                       name="newpassword"
                       type="password"
                       required
-                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-nattubtn focus:border-nattubtn sm:text-sm"
                       value={formikResetPwd.values.newpassword}
                       onChange={formikResetPwd.handleChange}
                       onBlur={formikResetPwd.handleBlur}
@@ -102,7 +102,7 @@ function ResetPassword() {
                       name="cnewpassword"
                       type="password"
                       required
-                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-nattubtn focus:border-nattubtn sm:text-sm"
                       value={formikResetPwd.values.cnewpassword}
                       onChange={formikResetPwd.handleChange}
                       onBlur={formikResetPwd.handleBlur}
@@ -128,7 +128,7 @@ function ResetPassword() {
                 <div className="">
                   <button
                     type="submit"
-                    className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-nattu hover:bg-nattudark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-nattubtn"
                   >
                     Reset Password
                     {auth.loading && (

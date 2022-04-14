@@ -5,7 +5,7 @@ import LandingPage from "./components/landing/LandingPage";
 import Login from "./components/landing/Login";
 import SignUp from "./components/landing/SignUp";
 import ResetPassword from "./components/landing/ResetPassword";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/common/Dashboard";
 import Home from "./components/home/Home";
 import UpdateProfile from "./components/profile/UpdateProfile";
 import Profile from "./components/profile/Profile";
@@ -15,9 +15,9 @@ import Invoice from "./components/transactions/Invoice";
 import Contacts from "./components/contacts/Contacts";
 import Team from "./components/team/Team";
 import Report from "./components/analytics/Report";
-import NotFound from "./components/NotFound";
+import NotFound from "./components/common/NotFound";
 import store from "./redux/store";
-import ErrorBoundary from "./components/ErrorBoundary";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 
 function App() {
   return (

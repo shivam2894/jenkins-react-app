@@ -36,7 +36,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
       resetForm();
       if (contacts.isEdit) dispatch(editContact(values));
       else dispatch(addContact(values));
-      dispatch(fetchAllContacts(contacts.currPage));
+      dispatch(fetchAllContacts());
       setIsModalOpen(false);
     },
   });
@@ -94,7 +94,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
                   
                   
                   {/*COMPANY NAME*/}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="companyName"
                       className="block text-sm font-medium text-gray-700"
@@ -106,7 +106,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="text"
                         name="companyName"
                         id="companyName"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.companyName}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -129,7 +129,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
                   </div>
 
                       {/* GSTIN */}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="gstin"
                       className="block text-sm font-medium text-gray-700"
@@ -142,9 +142,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
                         name="gstin"
                         id="gstin"
                         maxLength={15}
-                        placeholder="Must be of 15 characters"
-                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
-
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.gstin}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -168,7 +166,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
 
                       {/* Address */}
                   
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="address"
                       className="block text-sm font-medium text-gray-700"
@@ -180,7 +178,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="text"
                         name="address"
                         id="address"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.address}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -202,7 +200,7 @@ const AddContactModal = ({ isModalOpen, setIsModalOpen }) => {
                   </div>
                   <div className="basis-full"></div>
                   {/* SAVE BUTTON */}
-                  <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                  <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse p-2">
                     <button
                       type="submit"
                       className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"

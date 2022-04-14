@@ -1,11 +1,13 @@
 /* This example requires Tailwind CSS v2.0+ */
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, useCallback } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch } from "react-redux";
 import { ExclamationCircleIcon } from "@heroicons/react/solid";
-import { useFormik, yupToFormErrors } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { inviteEmployee } from "../../redux";
+import debounce from "lodash.debounce";
+import { getAuthenticatedRequest } from "../../redux";
 
 const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
   const dispatch = useDispatch();
@@ -20,20 +22,77 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
       roles: ["ROLE_EMPLOYEE"],
     },
     validationSchema: Yup.object({
-      password: Yup.string().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/, "Password must contain minimum six characters, at least one letter, one number and one special character").required("Password is required"),
-      cpassword: Yup.string().oneOf(
-        [Yup.ref("password"), null],
-        "Passwords must match"
-      ).required("Passwords must match")
+      username: Yup.string()
+        .min(6, "Username must be minimum 6 characters")
+        .required("Username is required"),
+      email: Yup.string().email().required("Email is required"),
+      dob: Yup.date()
+        .max(
+          new Date(Date.now() - 31556952000 * 10),
+          "Minimum age should be 10 years"
+        )
+        .required("DOB is required"),
+      password: Yup.string()
+        .matches(
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/,
+          "Password must contain minimum six characters, at least one letter, one number and one special character"
+        )
+        .required("Password is required"),
+      cpassword: Yup.string()
+        .oneOf([Yup.ref("password"), null], "Passwords must match")
+        .required("Passwords must match"),
     }),
     onSubmit: (values, { resetForm }) => {
-      dispatch(inviteEmployee(values));
-      resetForm();
-      setIsModalOpen(false);
+      if(!alreadyExists.username && !alreadyExists.email){
+        dispatch(inviteEmployee(values));
+        resetForm();
+        setIsModalOpen(false);
+      }
     },
+  });
+  const [alreadyExists, setAlreadyExists] = useState({
+    username: false,
+    email: false,
   });
 
   const cancelButtonRef = useRef(null);
+
+  const checkUsernameExists = async (value) => {
+    if (!value)
+      return setAlreadyExists((prev) => {
+        return { ...prev, username: false };
+      });
+    const response = await getAuthenticatedRequest()
+      .get(`/usernameCheck/${value}`)
+      .then((res) =>
+        setAlreadyExists((prev) => {
+          return { ...prev, username: res.data };
+        })
+      );
+    return !response;
+  };
+
+  const checkEmailExists = async (value) => {
+    if (!value)
+      return setAlreadyExists((prev) => {
+        return { ...prev, email: false };
+      });
+    const response = await getAuthenticatedRequest()
+      .get(`/emailCheck/${value}`)
+      .then((res) =>
+        setAlreadyExists((prev) => {
+          return { ...prev, email: res.data };
+        })
+      );
+    return !response;
+  };
+
+  const usernameChangeHandler = useCallback(
+    debounce(checkUsernameExists, 500),
+    []
+  );
+
+  const emailChangeHandler = useCallback(debounce(checkEmailExists, 500), []);
 
   return (
     <>
@@ -42,7 +101,10 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
           as="div"
           className="fixed z-10 inset-0 overflow-y-auto w-screen"
           initialFocus={cancelButtonRef}
-          onClose={setIsModalOpen}
+          onClose={()=>{
+            setIsModalOpen(false);
+            formik.handleReset();
+          }}
         >
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <Transition.Child
@@ -75,9 +137,8 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
             >
               <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 md:max-w-2xl">
                 <form className="flex flex-wrap" onSubmit={formik.handleSubmit}>
-
                   {/*User Name Field*/}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="username"
                       className="block text-sm font-medium text-gray-700"
@@ -89,32 +150,38 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="text"
                         name="username"
                         id="userName"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         placeholder="User Name"
                         value={formik.values.username}
-                        onChange={formik.handleChange}
+                        onChange={(e) => {
+                          formik.handleChange(e);
+                          usernameChangeHandler(e.target.value);
+                        }}
                         onBlur={formik.handleBlur}
                       />
-                      {formik.touched.username && formik.errors.username ? (
+                      {formik.touched.username && formik.errors.username && (
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                           <ExclamationCircleIcon
                             className="h-5 w-5 text-red-500"
                             aria-hidden="true"
                           />
                         </div>
-                      ) : null}
+                      )}
                     </div>
-                    {formik.touched.username && formik.errors.username ? (
+                    {formik.touched.username && formik.errors.username && (
                       <p className="mt-2 text-sm text-red-600" id="email-error">
                         {formik.errors.username}
                       </p>
-                    ) : null}
+                    )}
+                    {alreadyExists.username && (
+                      <p className="mt-2 text-sm text-red-600" id="email-error">
+                        Username already exists
+                      </p>
+                    )}
                   </div>
 
-
-
                   {/*Employee Full Name Field*/}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-700"
@@ -126,7 +193,7 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                         type="text"
                         name="name"
                         id="name"
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         placeholder="Name"
                         value={formik.values.name}
                         onChange={formik.handleChange}
@@ -149,7 +216,7 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                   </div>
 
                   {/*Employee email Id Field*/}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="email"
                       className="block text-sm font-medium text-gray-700"
@@ -164,31 +231,37 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                         autoComplete="email"
                         placeholder="Email"
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.email}
-                        onChange={formik.handleChange}
+                        onChange={(e) => {
+                          formik.handleChange(e);
+                          emailChangeHandler(e.target.value);
+                        }}
                         onBlur={formik.handleBlur}
-                        min="0"
                       />
-                      {formik.touched.email && formik.errors.email ? (
+                      {formik.touched.email && formik.errors.email && (
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                           <ExclamationCircleIcon
                             className="h-5 w-5 text-red-500"
                             aria-hidden="true"
                           />
                         </div>
-                      ) : null}
+                      )}
                     </div>
-                    {formik.touched.email && formik.errors.email ? (
+                    {formik.touched.email && formik.errors.email && (
                       <p className="mt-2 text-sm text-red-600" id="email-error">
                         {formik.errors.email}
                       </p>
-                    ) : null}
+                    )}
+                    {alreadyExists.email && (
+                      <p className="mt-2 text-sm text-red-600" id="email-error">
+                        Email already exists
+                      </p>
+                    )}
                   </div>
 
-
                   {/*Employee dob Field*/}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="dob"
                       className="block text-sm font-medium text-gray-700"
@@ -203,12 +276,11 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                         autoComplete="Date of Birth"
                         placeholder="Date of Birth"
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.dob}
                         onFocus={(e) => (e.currentTarget.type = "date")}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-
                       />
                       {formik.touched.dob && formik.errors.dob ? (
                         <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -227,7 +299,7 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                   </div>
 
                   {/*password Field*/}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
@@ -242,8 +314,7 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                         autoComplete="current-password"
                         placeholder="Password"
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.password}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -264,10 +335,8 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                     ) : null}
                   </div>
 
-
-
                   {/*Confirm Password Field*/}
-                  <div className="p-2 w-1/2">
+                  <div className="p-2 w-full md:w-1/2">
                     <label
                       htmlFor="cpassword"
                       className="block text-sm font-medium text-gray-700"
@@ -282,7 +351,7 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
                         autoComplete="current-password"
                         placeholder="Confirm Password"
                         required
-                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                         value={formik.values.cpassword}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -330,7 +399,6 @@ const InviteEmployeeModal = ({ isModalOpen, setIsModalOpen }) => {
           </div>
         </Dialog>
       </Transition.Root>
-
     </>
   );
 };

@@ -1,3 +1,4 @@
+import swal from 'sweetalert';
 import {
   TrashIcon,
   DocumentDownloadIcon,
@@ -160,7 +161,20 @@ const TransactionsTable = () => {
                           </button>
                           <button
                             className="text-red-600 hover:text-red-900 cursor-pointer"
-                            onClick={() => dispatch(deleteTransaction(tx.id))}
+                            onClick={() =>
+                              swal({
+                                title: "Are you sure you want to delete this Transaction?",
+                                text: `${tx.transactionName}`,
+                                icon: "warning",
+                                buttons: true,
+                                dangerMode: true,
+                              })
+                              .then((willDelete) => {
+                                if (willDelete) {
+                                  dispatch(deleteTransaction(tx.id));
+                                }
+                              })
+                            }
                           >
                             <TrashIcon className="w-6" />
                           </button>
@@ -230,7 +244,7 @@ const TransactionsTable = () => {
                     Previous
                   </button>
                   <button
-                  disabled={!transaction.nextExists}
+                    disabled={!transaction.nextExists}
                     className={
                       "ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 " +
                       (transaction.nextExists

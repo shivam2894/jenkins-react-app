@@ -20,9 +20,7 @@
 
 .container2 .box2 {
     position: relative;
-    width: 350px;
-    height: 350px;
-    margin: 20px;
+    margin: 16px;
     transform-style: preserve-3d;
     perspective: 1000px;
     cursor: pointer

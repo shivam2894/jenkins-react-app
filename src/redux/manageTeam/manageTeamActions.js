@@ -31,7 +31,7 @@ export const fetchAllEmployees = () => {
 };
 
 export const inviteEmployee = (user) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     const promise = new Promise((resolve, reject) => {
       getAuthenticatedRequest()
         .post("/invite", {
@@ -42,11 +42,12 @@ export const inviteEmployee = (user) => {
           dob: user.dob,
           roles: user.roles,
         })
-        .then((res) =>
-          resolve(dispatch(fetchAllEmployees(getState().team.currPage)))
-        )
-        .catch((err)=>
-          reject(dispatch({ type: INVITE_FAILURE, payload: err.response.data }))
+        .then(() => resolve(dispatch(fetchAllEmployees())))
+        .catch((err) =>
+          reject(() => {
+            dispatch({ type: INVITE_FAILURE, payload: err.response.data });
+            dispatch(fetchAllEmployees());
+          })
         );
     });
     toast.promise(promise, {
@@ -64,8 +65,11 @@ export const removeEmployee = (employeeId) => {
       .then(() => {
         dispatch(fetchAllEmployees(getState().team.currPage));
       })
-      .catch((err) =>
+      .catch((err) =>{
         dispatch({ type: GET_ALL_EMPLOYEE_FAILURE, payload: err })
+        dispatch(fetchAllEmployees());
+        toast.error("Failed to remove employee");
+      }
       );
   };
 };

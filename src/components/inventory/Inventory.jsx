@@ -46,7 +46,6 @@ const Inventory = () => {
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
       if (jsonData.length > 0) {
         dispatch(uploadProducts(jsonData));
-        toast.success("Added products to your inventory");
       } else {
         return toast.error(
           "Unable to fetch data from excel file! Please make sure data is in correct format"
@@ -94,14 +93,14 @@ const Inventory = () => {
                 <div className="flex my-auto space-x-2">
                   <div className="relative">
                     <input
-                      className="block w-36 border-nattubtn focus:border-nattudark focus:ring-nattudark bg-transparent text-gray-900 placeholder-gray-500 rounded-xl sm:text-sm"
+                      className="block w-full md:w-40 border-nattubtn focus:border-nattudark focus:ring-nattudark bg-transparent text-gray-900 placeholder-gray-500 rounded-md sm:text-sm"
                       placeholder="Search by ID"
                       type="search"
                       value={searchById}
                       onChange={(e) => setSearchById(e.target.value)}
                     />
                     <button
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-2 flex items-center"
                       onClick={() => {
                         dispatch(searchByProductId(searchById));
                         setSearchById("");
@@ -115,7 +114,7 @@ const Inventory = () => {
                   </div>
                   <div className="relative">
                     <input
-                      className="block w-40 border-nattubtn focus:border-nattudark focus:ring-nattudark bg-transparent text-gray-900 placeholder-gray-500 rounded-xl sm:text-sm"
+                      className="block w-full md:w-40 border-nattubtn focus:border-nattudark focus:ring-nattudark bg-transparent text-gray-900 placeholder-gray-500 rounded-md sm:text-sm"
                       placeholder="Search by Name"
                       type="search"
                       value={searchByName}
@@ -124,7 +123,7 @@ const Inventory = () => {
                       }}
                     />
                     <button
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                      className="absolute inset-y-0 right-0 pr-2 flex items-center"
                       onClick={() => {
                         dispatch(searchByProductName(searchByName));
                         setSearchByName("");
@@ -154,7 +153,7 @@ const Inventory = () => {
                   </thead>
                   <tbody>
                     <tr>
-                      <td className="text-center px-6 py-2 whitespace-nowrap">
+                      <td className="text-center py-2 whitespace-nowrap md:px-6">
                         <div className="text-md text-nattudark text-2xl">
                           <span>
                             {formatter.format(
@@ -163,12 +162,12 @@ const Inventory = () => {
                           </span>
                         </div>
                       </td>
-                      <td className="text-center px-6 py-2 whitespace-nowrap">
+                      <td className="text-center py-2 whitespace-nowrap md:px-6">
                         <div className="text-md text-nattudark text-2xl">
                           {inventory.stockSummary.lowStock}
                         </div>
                       </td>
-                      <td className="text-center px-6 py-2 whitespace-nowrap">
+                      <td className="text-center py-2 whitespace-nowrap md:px-6">
                         <div className="text-md text-nattudark text-2xl">
                           {inventory.stockSummary.excessStock}
                         </div>
@@ -180,7 +179,7 @@ const Inventory = () => {
                   <select
                     id="filterByStock"
                     name="filterByStock"
-                    className="block w-32 px-1 border-nattubtn focus:border-nattudark focus:ring-nattudark bg-transparent text-gray-900 placeholder-gray-500 rounded-xl sm:text-sm"
+                    className="block w-32 px-1 border-nattubtn focus:border-nattudark focus:ring-nattudark bg-transparent text-gray-900 placeholder-gray-500 rounded-md sm:text-sm"
                     onChange={(e) => {
                       dispatch(changeStockFilter(e.target.value));
                     }}

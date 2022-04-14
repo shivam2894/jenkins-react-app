@@ -9,7 +9,6 @@ import { createTransaction, resetProductList } from "../../redux";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-
 const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
   const transaction = useSelector((state) => state.transaction);
   const dispatch = useDispatch();
@@ -27,21 +26,29 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
         .max(30, "Name must be less than 30 characters")
         .required("Transaction Name is required"),
       transactionType: Yup.string().required("Transaction Type is required"),
-      transactionStatus: Yup.string().required("Transaction Status is required"),
-      companyName: Yup.string().max(50,"Company Name must be less than 50 characters").required("Company Name is required"),
-      shippingAddress: Yup.string().max(250,"Shipping Address must be less than 250 characters").required("Shipping Address is required"),
+      transactionStatus: Yup.string().required(
+        "Transaction Status is required"
+      ),
+      companyName: Yup.string()
+        .max(50, "Company Name must be less than 50 characters")
+        .required("Company Name is required"),
+      shippingAddress: Yup.string()
+        .max(250, "Shipping Address must be less than 250 characters")
+        .required("Shipping Address is required"),
     }),
     onSubmit: (values, { resetForm }) => {
       if (transaction.productList.length !== 0) {
-        dispatch(createTransaction({
-          ...values,
-          productList: transaction.productList.map((product,idx)=> {
-            return{
-              productId: product.id,
-              count: product.quantity
-            }
+        dispatch(
+          createTransaction({
+            ...values,
+            productList: transaction.productList.map((product) => {
+              return {
+                productId: product.id,
+                count: product.quantity,
+              };
+            }),
           })
-        }));
+        );
         setIsModalOpen(false);
         dispatch(resetProductList());
         resetForm();
@@ -108,7 +115,7 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
                           type="text"
                           name="transactionName"
                           required
-                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                           value={formik.values.transactionName}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
@@ -145,9 +152,12 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
                         <select
                           name="transactionType"
                           required
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
+                          className="mt-1 focus:ring-nattubtn focus:border-nattubtn block w-full p-2 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
                           value={formik.values.transactionType}
-                          onChange={formik.handleChange}
+                          onChange={(e) => {
+                            formik.handleChange(e);
+                            dispatch(resetProductList());
+                          }}
                           onBlur={formik.handleBlur}
                         >
                           <option disabled value="">
@@ -188,7 +198,7 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
                         <select
                           name="transactionStatus"
                           required
-                          className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
+                          className="mt-1 focus:ring-nattubtn focus:border-nattubtn block w-full p-2 rounded-md bg-transparent focus:z-10 sm:text-sm border-gray-300"
                           value={formik.values.transactionStatus}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
@@ -196,10 +206,20 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
                           <option disabled defaultValue="" value="">
                             Select...
                           </option>
-                          {formik.values.transactionType==="PURCHASE" && <option value="RECEIVED">Received</option>}
-                          {formik.values.transactionType==="PURCHASE" && <option value="NOTRECEIVED">Not Received</option>}
-                          {formik.values.transactionType==="SALES" && <option value="DISPATCHED">Dispatched</option>}
-                          {formik.values.transactionType==="SALES" && <option value="NOTDISPATCHED">Not Dispatched</option>}
+                          {formik.values.transactionType === "PURCHASE" && (
+                            <option value="RECEIVED">Received</option>
+                          )}
+                          {formik.values.transactionType === "PURCHASE" && (
+                            <option value="NOTRECEIVED">Not Received</option>
+                          )}
+                          {formik.values.transactionType === "SALES" && (
+                            <option value="DISPATCHED">Dispatched</option>
+                          )}
+                          {formik.values.transactionType === "SALES" && (
+                            <option value="NOTDISPATCHED">
+                              Not Dispatched
+                            </option>
+                          )}
                         </select>
                         {formik.touched.transactionStatus &&
                         formik.errors.transactionStatus ? (
@@ -234,7 +254,7 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
                           type="text"
                           name="companyName"
                           required
-                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                           value={formik.values.companyName}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
@@ -273,7 +293,7 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
                           name="shippingAddress"
                           required
                           maxLength={255}
-                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                          className="shadow-sm focus:ring-nattubtn focus:border-nattubtn block w-full sm:text-sm border-gray-300 rounded-md"
                           value={formik.values.shippingAddress}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
@@ -300,28 +320,36 @@ const AddTransactionModal = ({ isModalOpen, setIsModalOpen }) => {
                     </div>
 
                     <div className="space-x-4 p-2">
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-black shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:w-auto"
-                      onClick={() => {
-                        setIsModalOpen(false);
-                        formik.handleReset();
-                        dispatch(resetProductList());
-                      }}
-                      ref={cancelButtonRef}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="inline-flex items-center justify-center rounded-md border border-transparent bg-nattubtn px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-nattu focus:outline-none focus:ring-2 focus:ring-nattu focus:ring-offset-2 sm:w-auto"
-                    >
-                      Add Transaction
-                    </button>
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-200 px-4 py-2 text-sm font-medium text-black shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:w-auto"
+                        onClick={() => {
+                          setIsModalOpen(false);
+                          formik.handleReset();
+                          dispatch(resetProductList());
+                        }}
+                        ref={cancelButtonRef}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="inline-flex items-center justify-center rounded-md border border-transparent bg-nattubtn px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-nattu focus:outline-none focus:ring-2 focus:ring-nattu focus:ring-offset-2 sm:w-auto"
+                      >
+                        Add Transaction
+                      </button>
+                    </div>
                   </div>
-                  </div>
-                  {(formik.values.transactionName && formik.values.transactionType && formik.values.transactionStatus && formik.values.companyName && formik.values.shippingAddress) ? <ProductListTable type={formik.values.transactionType} /> : (
-                    <p className="text-lg text-red-400 m-auto">Please Enter Transaction details to add products</p>
+                  {formik.values.transactionName &&
+                  formik.values.transactionType &&
+                  formik.values.transactionStatus &&
+                  formik.values.companyName &&
+                  formik.values.shippingAddress ? (
+                    <ProductListTable type={formik.values.transactionType} />
+                  ) : (
+                    <p className="text-lg text-red-400 m-auto">
+                      Please Enter Transaction details to add products
+                    </p>
                   )}
                 </form>
               </div>

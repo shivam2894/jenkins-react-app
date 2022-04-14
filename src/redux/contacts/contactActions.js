@@ -1,13 +1,14 @@
+import { toast } from "react-toastify";
 import { getAuthenticatedRequest } from "..";
 import {
-    CONTACT_ADD_REQUEST,
-    CONTACT_ADD_FAILURE,
-    GET_ALL_CONTACTS_SUCCESS,
-    GET_ALL_CONTACTS_FAILURE,
-    CHANGE_CONTACT_PAGE,
-    EDIT_CONTACT_OPEN,
-    EDIT_CONTACT_CLOSE,
-  } from "./contactTypes";
+  CONTACT_ADD_REQUEST,
+  CONTACT_ADD_FAILURE,
+  GET_ALL_CONTACTS_SUCCESS,
+  GET_ALL_CONTACTS_FAILURE,
+  CHANGE_CONTACT_PAGE,
+  EDIT_CONTACT_OPEN,
+  EDIT_CONTACT_CLOSE,
+} from "./contactTypes";
 
 export const changeContactPage = (pageNo) => {
   return (dispatch) => {
@@ -18,26 +19,31 @@ export const changeContactPage = (pageNo) => {
 
 export const fetchAllContacts = () => {
   return (dispatch, getState) => {
-    dispatch({type: CONTACT_ADD_REQUEST});
+    dispatch({ type: CONTACT_ADD_REQUEST });
     getAuthenticatedRequest()
-    .get(`/companies/page/${getState().contacts.currPage}`)
-    .then((res) =>{
-      dispatch({type: GET_ALL_CONTACTS_SUCCESS, payload: res.data});
-    }
-    )
-    .catch((err) =>
-      dispatch({type: GET_ALL_CONTACTS_FAILURE, payload: err.response})
-    );
+      .get(`/companies/page/${getState().contacts.currPage}`)
+      .then((res) => {
+        dispatch({ type: GET_ALL_CONTACTS_SUCCESS, payload: res.data });
+      })
+      .catch((err) =>
+        dispatch({ type: GET_ALL_CONTACTS_FAILURE, payload: err.response })
+      );
   };
 };
 
 export const addContact = (contact) => {
-  return (dispatch,getState) => {
-    dispatch({type: CONTACT_ADD_REQUEST});
+  return (dispatch) => {
+    dispatch({ type: CONTACT_ADD_REQUEST });
     getAuthenticatedRequest()
       .post("/companies/add", contact)
-      .then(()=>dispatch(fetchAllContacts(getState().contacts.currPage)))
-      .catch((err) => dispatch({type: CONTACT_ADD_FAILURE, payload: err.response.data}));
+      .then(() => {
+        dispatch(fetchAllContacts());
+        toast.success("Successfully added contact");
+      })
+      .catch((err) => {
+        dispatch({ type: CONTACT_ADD_FAILURE, payload: err.response.data });
+        dispatch(fetchAllContacts());
+      });
   };
 };
 
@@ -55,7 +61,7 @@ export const editContactClose = () => {
 };
 
 export const editContact = (contact) => {
-  return (dispatch,getState) => {
+  return (dispatch) => {
     getAuthenticatedRequest()
       .patch(`/companies/edit/${contact.id}`, {
         id: contact.id,
@@ -63,15 +69,28 @@ export const editContact = (contact) => {
         gstin: contact.gstin,
         address: contact.address,
       })
-      .then(() => dispatch(fetchAllContacts(getState().contacts.currPage)))
-      .catch((err) => dispatch({type: GET_ALL_CONTACTS_FAILURE, payload: err.response.data}));
+      .then(() => {
+        dispatch(fetchAllContacts());
+        dispatch(editContactClose());
+        toast.success("Updated contact successfully");
+      })
+      .catch((err) => {
+        dispatch({
+          type: GET_ALL_CONTACTS_FAILURE,
+          payload: err.response.data,
+        });
+        dispatch(fetchAllContacts());
+      });
   };
 };
 
 export const deleteContact = (id) => {
-  return (dispatch,getState) => {
-    getAuthenticatedRequest().delete(`/companies/delete/${id}`)
-      .then(()=>dispatch(fetchAllContacts(getState().contacts.currPage)))
-      .catch((err)=>dispatch({type: GET_ALL_CONTACTS_FAILURE, payload: err.response.data}))
+  return (dispatch) => {
+    getAuthenticatedRequest()
+      .delete(`/companies/delete/${id}`)
+      .then(() => dispatch(fetchAllContacts()))
+      .catch((err) =>
+        dispatch({ type: GET_ALL_CONTACTS_FAILURE, payload: err.response.data })
+      );
   };
 };
